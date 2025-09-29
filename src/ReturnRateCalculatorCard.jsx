@@ -1,4 +1,3 @@
-import { Input } from "@/components/ui/input";
 import React, { useMemo, useState } from "react";
 import { motion, AnimatePresence, useSpring, useMotionValue } from "framer-motion";
 
@@ -18,12 +17,16 @@ function useAnimatedNumber(n) {
 
 function formatEuro(value) {
   if (isNaN(value)) return "€0";
-  return new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(value);
+  return new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: "EUR",
+    maximumFractionDigits: 0,
+  }).format(value);
 }
 
 export default function ReturnRateCalculatorCard({
-  brandColor = "#7C3AED",
-  accentColor = "#14B8A6",
+  brandColor = "#FCD62A",
+  accentColor = "#000000",
   ctaText = "Lower My Return Rate",
   ctaHref = "#",
   showAdvanced = true,
@@ -90,32 +93,48 @@ export default function ReturnRateCalculatorCard({
         <div className="rounded-[22px] bg-white p-6 sm:p-8">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold" style={{ backgroundColor: `${brandColor}15`, color: brandColor }}>
-                💸 Return Rate Calculator
+              <div
+                className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold"
+                style={{ backgroundColor: `${brandColor}15`, color: brandColor }}
+              >
+                Return Rate Calculator
               </div>
               <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold tracking-tight">
                 See how much you can save with better visuals
               </h1>
-              <p className="mt-1 text-sm text-gray-600">Play with the numbers. Results update instantly.</p>
+              <p className="mt-1 text-sm text-gray-600">
+                Play with the numbers. Results update instantly.
+              </p>
             </div>
-            <div className="hidden sm:block text-4xl">✨</div>
           </div>
 
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <LabeledInput label="Average product price (€)" value={price} onChange={(v) => setPrice(Number(v))} min={0} step={1} placeholder="75" />
-            <LabeledInput label="Annual sales volume (units)" value={volume} onChange={(v) => setVolume(Number(v))} min={0} step={100} placeholder="500000" />
-            <LabeledInput label="Current return rate (%)" value={rate} onChange={(v) => setRate(Number(v))} min={0} max={100} step={0.5} placeholder="25" />
-            <LabeledInput label="Expected reduction in returns (%)" value={reduction} onChange={(v) => setReduction(Number(v))} min={0} max={100} step={0.5} placeholder="20" />
+            <LabeledInput label="Average product price (€)" value={price} onChange={setPrice} />
+            <LabeledInput label="Annual sales volume (units)" value={volume} onChange={setVolume} />
+            <LabeledInput label="Current return rate (%)" value={rate} onChange={setRate} />
+            <LabeledInput
+              label="Expected reduction in returns (%)"
+              value={reduction}
+              onChange={setReduction}
+            />
           </div>
 
           {showAdvanced && (
             <details className="mt-3 group">
               <summary className="cursor-pointer text-sm text-gray-600 hover:text-gray-800 select-none">
-                Advanced (optional): Handling cost per return (€) — currently {formatEuro(handling)}
+                Advanced (optional): Handling cost per return (€) — currently{" "}
+                {formatEuro(handling)}
               </summary>
               <div className="mt-3 max-w-sm">
-                <LabeledInput label="Handling cost per return (€)" value={handling} onChange={(v) => setHandling(Number(v))} min={0} step={1} />
-                <p className="text-xs text-gray-500 mt-1">Covers logistics, processing, repackaging, etc. Defaults to €{defaultHandlingCost}.</p>
+                <LabeledInput
+                  label="Handling cost per return (€)"
+                  value={handling}
+                  onChange={setHandling}
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Covers logistics, processing, repackaging, etc. Defaults to €
+                  {defaultHandlingCost}.
+                </p>
               </div>
             </details>
           )}
@@ -127,13 +146,20 @@ export default function ReturnRateCalculatorCard({
           </div>
 
           <div className="mt-6">
-            <a href={ctaHref} target="_blank" rel="noreferrer noopener"
-               className="inline-flex items-center justify-center rounded-2xl px-5 py-3 font-semibold text-white shadow-md hover:shadow-lg transition active:scale-[0.99]"
-               style={{ background: gradient }}
-               onClick={() => setShowEmail(true)}>
-              🚀 {ctaText}
+            <a
+              href={ctaHref}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex items-center justify-center rounded-2xl px-5 py-3 font-semibold text-white shadow-md hover:shadow-lg transition active:scale-[0.99]"
+              style={{ background: gradient }}
+              onClick={() => setShowEmail(true)}
+            >
+              {ctaText}
             </a>
-            <p className="text-xs text-gray-500 mt-2">Tip: Click the CTA to book a shoot — or leave your details below and we’ll reach out to help you lower this number.</p>
+            <p className="text-xs text-gray-500 mt-2">
+              Tip: Click the CTA to book a shoot — or leave your details below and we’ll reach out
+              to help you lower this number.
+            </p>
           </div>
 
           <AnimatePresence>
@@ -148,22 +174,37 @@ export default function ReturnRateCalculatorCard({
               >
                 {submitted ? (
                   <div className="text-center">
-                    <div className="text-3xl">🎉</div>
-                    <p className="mt-2 font-semibold">Thanks! We’ll be in touch to help reduce your return rate.</p>
-                    <p className="text-sm text-gray-600">Meanwhile, keep experimenting with the calculator above.</p>
+                    <p className="mt-2 font-semibold">
+                      Thanks! We’ll be in touch to help reduce your return rate.
+                    </p>
                   </div>
                 ) : (
                   <form onSubmit={handleLeadSubmit} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <Input label="Name" value={lead.name} onChange={(v) => setLead({ ...lead, name: v })} placeholder="Alex Example" />
-                    <Input label="Email" type="email" value={lead.email} onChange={(v) => setLead({ ...lead, email: v })} placeholder="alex@brand.com" required />
-                    <Input label="Company" value={lead.company} onChange={(v) => setLead({ ...lead, company: v })} placeholder="Brand GmbH" />
+                    <TextInput label="Name" value={lead.name} onChange={(v) => setLead({ ...lead, name: v })} />
+                    <TextInput label="Email" type="email" value={lead.email} onChange={(v) => setLead({ ...lead, email: v })} required />
+                    <TextInput label="Company" value={lead.company} onChange={(v) => setLead({ ...lead, company: v })} />
                     <div className="sm:col-span-2 flex items-start gap-2 mt-1">
-                      <input id="consent" type="checkbox" className="mt-1" checked={lead.consent} onChange={(e) => setLead({ ...lead, consent: e.target.checked })} />
-                      <label htmlFor="consent" className="text-xs text-gray-600">I agree to be contacted about lowering our return rate. Privacy-first: we’ll never share your data.</label>
+                      <input
+                        id="consent"
+                        type="checkbox"
+                        className="mt-1"
+                        checked={lead.consent}
+                        onChange={(e) => setLead({ ...lead, consent: e.target.checked })}
+                      />
+                      <label htmlFor="consent" className="text-xs text-gray-600">
+                        I agree to be contacted about lowering our return rate. Privacy-first: we’ll never share your data.
+                      </label>
                     </div>
                     <div className="sm:col-span-1 flex justify-end">
-                      <button type="submit" disabled={!lead.consent} className={`rounded-xl px-4 py-3 font-semibold text-white transition shadow-md ${lead.consent ? 'opacity-100' : 'opacity-60 cursor-not-allowed'}`} style={{ background: gradient }}>
-                        📩 Send
+                      <button
+                        type="submit"
+                        disabled={!lead.consent}
+                        className={`rounded-xl px-4 py-3 font-semibold text-white transition shadow-md ${
+                          lead.consent ? "opacity-100" : "opacity-60 cursor-not-allowed"
+                        }`}
+                        style={{ background: gradient }}
+                      >
+                        Send
                       </button>
                     </div>
                   </form>
@@ -181,33 +222,44 @@ export default function ReturnRateCalculatorCard({
   );
 }
 
-function LabeledInput({ label, value, onChange, type = "number", min, max, step, placeholder }) {
+function LabeledInput({ label, value, onChange, type = "number" }) {
   return (
     <label className="block">
       <div className="text-xs font-semibold text-gray-700 mb-1">{label}</div>
       <input
         type={type}
-        inputMode={type === "number" ? "decimal" : undefined}
-        className="w-full rounded-xl border px-3 py-2 outline-none focus:ring-2 focus:ring-violet-300"
+        className="w-full rounded-xl border px-3 py-2 outline-none focus:ring-2 focus:ring-yellow-300"
         value={value}
-        min={min}
-        max={max}
-        step={step}
-        placeholder={placeholder}
+        onChange={(e) => onChange(Number(e.target.value))}
+      />
+    </label>
+  );
+}
+
+function TextInput({ label, value, onChange, type = "text", required = false }) {
+  return (
+    <label className="block">
+      <div className="text-xs font-semibold text-gray-700 mb-1">{label}</div>
+      <input
+        type={type}
+        required={required}
+        className="w-full rounded-xl border px-3 py-2 outline-none focus:ring-2 focus:ring-yellow-300"
+        value={value}
         onChange={(e) => onChange(e.target.value)}
       />
     </label>
   );
 }
 
-function StatPill({ title, value, formatter = (v) => v, highlight = false, color = "#7C3AED" }) {
+function StatPill({ title, value, formatter = (v) => v, highlight = false, color = "#FCD62A" }) {
   const bg = highlight ? `${color}15` : "#F3F4F6";
   const text = highlight ? color : "#111827";
   return (
     <div className="rounded-2xl p-4 border" style={{ backgroundColor: bg, borderColor: `${color}22` }}>
       <div className="text-xs text-gray-600">{title}</div>
-      <div className="mt-1 text-2xl font-extrabold" style={{ color: text }}>{formatter(Math.round(value || 0))}</div>
+      <div className="mt-1 text-2xl font-extrabold" style={{ color: text }}>
+        {formatter(Math.round(value || 0))}
+      </div>
     </div>
   );
 }
-
